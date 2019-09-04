@@ -1,4 +1,4 @@
-package com.jpastudy.mapping;
+package com.jpastudy.manyMapping.manyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class Member {
-
-	public Member(String id, String name) {
-		this.id = id;
+	public Member(String name) {
 		this.name = name;
 	}
 
@@ -21,18 +19,18 @@ public class Member {
 	private String id;
 
 	private String name;
-	private String city;
-	private String street;
-	private String zipcode;
+
 	@ManyToOne
 	@JoinColumn(name = "TEAM_ID")
+	//연관관계 주인
+	//일대다 다대일 연관관계는 항상 다에 외래키가 있음
 	private Team team;
 
 	public void setTeam(Team team) {
-		if (this.team != null) { //기존 팀이 있으면 기존 팀과 회원의 연관관계를 삭제해야함.
-			this.team.getMembers().remove(this);
-		}
-
 		this.team = team;
-		team.getMembers().add(this);
-	}}
+
+		if (!team.getMembers().contains(this)) {
+			team.getMembers().add(this);
+		}
+	}
+}
